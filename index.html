@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>飞-20230616动画雨</title>
+</head>
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+    }
+
+    body {
+        overflow: hidden;
+    }
+
+    /* cyrillic */
+    @font-face {
+        font-family: 'Rubik Mono One';
+        font-style: normal;
+        font-weight: 400;
+        src: local('Rubik Mono One Regular'), local('RubikMonoOne-Regular'), url(https://fonts.gstatic.com/s/rubikmonoone/v6/UqyJK8kPP3hjw6ANTdfRk9YSN98zTKUbcw.woff2) format('woff2');
+        unicode-range: U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+    }
+
+    /* latin-ext */
+    @font-face {
+        font-family: 'Rubik Mono One';
+        font-style: normal;
+        font-weight: 400;
+        src: local('Rubik Mono One Regular'), local('RubikMonoOne-Regular'), url(https://fonts.gstatic.com/s/rubikmonoone/v6/UqyJK8kPP3hjw6ANTdfRk9YSN985TKUbcw.woff2) format('woff2');
+        unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF;
+    }
+
+    /* latin */
+    @font-face {
+        font-family: 'Rubik Mono One';
+        font-style: normal;
+        font-weight: 400;
+        src: local('Rubik Mono One Regular'), local('RubikMonoOne-Regular'), url(https://fonts.gstatic.com/s/rubikmonoone/v6/UqyJK8kPP3hjw6ANTdfRk9YSN983TKU.woff2) format('woff2');
+        unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+    }
+
+    html,
+    body {
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        font-family: 'Rubik Mono One', sans-serif;
+        background: #22292C;
+    }
+
+    svg {
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        z-index: 1;
+    }
+
+    #d {
+        position: absolute;
+        text-align: center;
+        top: 20%;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 500px;
+
+    }
+
+    button {
+        z-index: 2;
+        height: 26px;
+        width: 100px;
+        box-shadow: 0px 0px 0px 1px #2868c8;
+        color: #fff;
+        font-size: 15px;
+        letter-spacing: 1px;
+        background: #3385ff;
+        border-bottom: 1px solid #2d78f4;
+        outline: medium;
+        border: 1px solid #2868c8;
+    }
+
+    .input {
+        z-index: 2;
+        font-size: 20px;
+        font-family: helvetica, sans-serif;
+        background: none;
+        border: 1px solid #ddd;
+        color: #eee;
+    }
+
+    .text,
+    .offscreen-text {
+        width: 100%;
+        top: 50%;
+        transform: translateY(-50%);
+        display: block;
+        position: absolute;
+        margin: 0;
+    }
+
+    .offscreen-text {
+        text-align: center;
+        top: -9999px;
+    }
+
+    .text span {
+        position: absolute;
+    }
+
+    .webdesigntuts-workshop {
+
+        height: 100%;
+        width: 100%;
+    }
+
+    .webdesigntuts-workshop:before,
+    .webdesigntuts-workshop:after {
+        content: '';
+        display: block;
+        height: 0px;
+        left: 50%;
+        margin: 0 0 0 -400px;
+
+        width: 800px;
+    }
+
+    .webdesigntuts-workshop:before {
+        background: #444;
+        background: -webkit-linear-gradient(left, #151515, #444, #151515);
+        background: -moz-linear-gradient(left, #151515, #444, #151515);
+        background: -o-linear-gradient(left, #151515, #444, #151515);
+        background: -ms-linear-gradient(left, #151515, #444, #151515);
+        background: linear-gradient(left, #151515, #444, #151515);
+        top: 192px;
+    }
+
+    .webdesigntuts-workshop:after {
+        background: #000;
+        background: -webkit-linear-gradient(left, #151515, #000, #151515);
+        background: -moz-linear-gradient(left, #151515, #000, #151515);
+        background: -o-linear-gradient(left, #151515, #000, #151515);
+        background: -ms-linear-gradient(left, #151515, #000, #151515);
+        background: linear-gradient(left, #151515, #000, #151515);
+        top: 191px;
+    }
+
+    .webdesigntuts-workshop span {
+        background: #111;
+        background: -webkit-linear-gradient(#1b1b1b, #111);
+        background: -moz-linear-gradient(#1b1b1b, #111);
+        background: -o-linear-gradient(#1b1b1b, #111);
+        background: -ms-linear-gradient(#1b1b1b, #111);
+        background: linear-gradient(#1b1b1b, #111);
+        border: 1px solid #000;
+        border-radius: 5px;
+        box-shadow: inset 0 0 0 1px #272727;
+        display: inline-block;
+        font-size: 0px;
+        margin: 50% auto 0;
+        padding: 20px;
+
+        z-index: 1;
+    }
+
+    .webdesigntuts-workshop input {
+        background: #222;
+        background: -webkit-linear-gradient(#333, #222);
+        background: -moz-linear-gradient(#333, #222);
+        background: -o-linear-gradient(#333, #222);
+        background: -ms-linear-gradient(#333, #222);
+        background: linear-gradient(#333, #222);
+        border: 1px solid #444;
+        border-radius: 5px 0 0 5px;
+        box-shadow: 0 2px 0 #000;
+        color: #888;
+        display: block;
+        float: left;
+        font-family: 'Cabin', helvetica, arial, sans-serif;
+        font-size: 13px;
+        font-weight: 400;
+        height: 40px;
+        margin: 0;
+        padding: 0 10px;
+        text-shadow: 0 -1px 0 #000;
+        width: 200px;
+    }
+
+    .ie .webdesigntuts-workshop input {
+        line-height: 40px;
+    }
+
+    .webdesigntuts-workshop input::-webkit-input-placeholder {
+        color: #888;
+    }
+
+    .webdesigntuts-workshop input:-moz-placeholder {
+        color: #888;
+    }
+
+    .webdesigntuts-workshop input:focus {
+        -webkit-animation: glow 800ms ease-out infinite alternate;
+        -moz-animation: glow 800ms ease-out infinite alternate;
+        -o-animation: glow 800ms ease-out infinite alternate;
+        -ms-animation: glow 800ms ease-out infinite alternate;
+        animation: glow 800ms ease-out infinite alternate;
+        background: #222922;
+        background: -webkit-linear-gradient(#333933, #222922);
+        background: -moz-linear-gradient(#333933, #222922);
+        background: -o-linear-gradient(#333933, #222922);
+        background: -ms-linear-gradient(#333933, #222922);
+        background: linear-gradient(#333933, #222922);
+        border-color: #393;
+        box-shadow: 0 0 5px rgba(0, 255, 0, .2), inset 0 0 5px rgba(0, 255, 0, .1), 0 2px 0 #000;
+        color: #efe;
+        outline: none;
+    }
+
+    .webdesigntuts-workshop input:focus::-webkit-input-placeholder {
+        color: #efe;
+    }
+
+    .webdesigntuts-workshop input:focus:-moz-placeholder {
+        color: #efe;
+    }
+
+    .webdesigntuts-workshop button {
+        background: #222;
+        background: -webkit-linear-gradient(#333, #222);
+        background: -moz-linear-gradient(#333, #222);
+        background: -o-linear-gradient(#333, #222);
+        background: -ms-linear-gradient(#333, #222);
+        background: linear-gradient(#333, #222);
+        -webkit-box-sizing: content-box;
+        -moz-box-sizing: content-box;
+        -o-box-sizing: content-box;
+        -ms-box-sizing: content-box;
+        box-sizing: content-box;
+        border: 1px solid #444;
+        border-left-color: #000;
+        border-radius: 0 5px 5px 0;
+        box-shadow: 0 2px 0 #000;
+        color: #fff;
+        display: block;
+        float: left;
+        font-family: 'Cabin', helvetica, arial, sans-serif;
+        font-size: 13px;
+        font-weight: 400;
+        height: 38px;
+        line-height: 38px;
+        margin: 0;
+        padding: 0;
+        position: relative;
+        text-shadow: 0 -1px 0 #000;
+        width: 80px;
+    }
+
+    .webdesigntuts-workshop button:hover,
+    .webdesigntuts-workshop button:focus {
+        background: #292929;
+        background: -webkit-linear-gradient(#393939, #292929);
+        background: -moz-linear-gradient(#393939, #292929);
+        background: -o-linear-gradient(#393939, #292929);
+        background: -ms-linear-gradient(#393939, #292929);
+        background: linear-gradient(#393939, #292929);
+        color: #5f5;
+        outline: none;
+    }
+
+    .webdesigntuts-workshop button:active {
+        background: #292929;
+        background: -webkit-linear-gradient(#393939, #292929);
+        background: -moz-linear-gradient(#393939, #292929);
+        background: -o-linear-gradient(#393939, #292929);
+        background: -ms-linear-gradient(#393939, #292929);
+        background: linear-gradient(#393939, #292929);
+        box-shadow: 0 1px 0 #000, inset 1px 0 1px #222;
+        top: 1px;
+    }
+
+    @-webkit-keyframes glow {
+        0% {
+            border-color: #393;
+            box-shadow: 0 0 5px rgba(0, 255, 0, .2), inset 0 0 5px rgba(0, 255, 0, .1), 0 2px 0 #000;
+        }
+
+        100% {
+            border-color: #6f6;
+            box-shadow: 0 0 20px rgba(0, 255, 0, .6), inset 0 0 10px rgba(0, 255, 0, .4), 0 2px 0 #000;
+        }
+    }
+
+    @-moz-keyframes glow {
+        0% {
+            border-color: #393;
+            box-shadow: 0 0 5px rgba(0, 255, 0, .2), inset 0 0 5px rgba(0, 255, 0, .1), 0 2px 0 #000;
+        }
+
+        100% {
+            border-color: #6f6;
+            box-shadow: 0 0 20px rgba(0, 255, 0, .6), inset 0 0 10px rgba(0, 255, 0, .4), 0 2px 0 #000;
+        }
+    }
+
+    @-o-keyframes glow {
+        0% {
+            border-color: #393;
+            box-shadow: 0 0 5px rgba(0, 255, 0, .2), inset 0 0 5px rgba(0, 255, 0, .1), 0 2px 0 #000;
+        }
+
+        100% {
+            border-color: #6f6;
+            box-shadow: 0 0 20px rgba(0, 255, 0, .6), inset 0 0 10px rgba(0, 255, 0, .4), 0 2px 0 #000;
+        }
+    }
+
+    @-ms-keyframes glow {
+        0% {
+            border-color: #393;
+            box-shadow: 0 0 5px rgba(0, 255, 0, .2), inset 0 0 5px rgba(0, 255, 0, .1), 0 2px 0 #000;
+        }
+
+        100% {
+            border-color: #6f6;
+            box-shadow: 0 0 20px rgba(0, 255, 0, .6), inset 0 0 10px rgba(0, 255, 0, .4), 0 2px 0 #000;
+        }
+    }
+
+    @keyframes glow {
+        0% {
+            border-color: #393;
+            box-shadow: 0 0 5px rgba(0, 255, 0, .2), inset 0 0 5px rgba(0, 255, 0, .1), 0 2px 0 #000;
+        }
+
+        100% {
+            border-color: #6f6;
+            box-shadow: 0 0 20px rgba(0, 255, 0, .6), inset 0 0 10px rgba(0, 255, 0, .4), 0 2px 0 #000;
+        }
+    }
+</style>
+<script src="http://www.jq22.com/jquery/jquery-1.10.2.js"></script>
+<script>
+    function search() {
+        // window.open("http://www.baidu.com/s?wd=" + $("#input").val());
+        alert('傻鸟瞎按')
+    }
+    document.onkeydown = function (event) {
+        var e = event || window.event || arguments.callee.caller.arguments[0];
+        if (e && e.keyCode == 13) {
+            search();
+        }
+    };
+</script>
+<canvas id="canvas" width="1280" height="1024"> 您的浏览器不支持canvas标签，请您更换浏览器 </canvas>
+
+<p id="offscreen-text" class="offscreen-text"></p>
+<p id="text" class="text"></p>
+<!--<svg id="svg" > </svg>-->
+
+<div id="d" class="webdesigntuts-workshop"> <span>
+        <input class="input" id="input" type="search" placeholder="请输入您要搜索的内容" autofocus="autofocus" />
+        <button onclick="search();">百度一下</button>
+    </span> </div>
+<script>
+
+    var canvas = document.getElementById("canvas");
+    var can = canvas.getContext("2d");
+    var s = window.screen;
+    var w = canvas.width = s.width;
+    var h = canvas.height = s.height;
+
+    can.fillStyle = color2();
+
+    var words = Array(256).join("1").split("");
+
+    setInterval(draw, 50);
+
+    function draw() {
+        can.fillStyle = 'rgba(0,0,0,0.05)';
+        can.fillRect(0, 0, w, h);
+        can.fillStyle = color2();
+        words.map(function (y, n) {
+            text = String.fromCharCode(Math.ceil(65 + Math.random() * 57));
+            x = n * 10;
+            can.fillText(text, x, y)
+            words[n] = (y > 758 + Math.random() * 484 ? 0 : y + 10);
+        });
+    }
+
+    function color1() {
+        var colors = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 'a', 'b', 'c', 'd', 'e', 'f'];
+        var color = "";
+        for (var i = 0; i < 6; i++) {
+            var n = Math.ceil(Math.random() * 15);
+            color += "" + colors[n];
+        }
+        return '#' + color;
+    }
+
+    function color2() {
+        var color = Math.ceil(Math.random() * 16777215).toString(16);
+        while (color.length < 6) {
+            color = '0' + color;
+        }
+        return '#' + color;
+    }
+    function color3() {
+        return "#" + (function (color) {
+            return new Array(7 - color.length).join("0") + color;
+        })((Math.random() * 0x1000000 << 0).toString(16))
+    }
+
+    var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+    function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+    var selectSVG = function selectSVG(id) {
+        var el = document.getElementById(id);
+        return new SVGElement(el);
+    };
+
+    var createSVG = function createSVG(type) {
+        var el = document.createElementNS('http://www.w3.org/2000/svg', type);
+        return new SVGElement(el);
+    };
+
+    var SVGElement = function () {
+        function SVGElement(element) {
+            _classCallCheck(this, SVGElement);
+
+            this.element = element;
+        }
+
+        _createClass(SVGElement, [{
+            key: 'set',
+            value: function set(attributeName, value) {
+                // this.element.setAttribute(attributeName, value);
+            }
+        }, {
+            key: 'style',
+            value: function style(property, value) {
+                this.element.style[property] = value;
+            }
+        }]);
+
+        return SVGElement;
+    }();
+
+    var colors = [{ main: '#FBDB4A', shades: ['#FAE073', '#FCE790', '#FADD65', '#E4C650'] }, { main: '#F3934A', shades: ['#F7B989', '#F9CDAA', '#DD8644', '#F39C59'] }, { main: '#EB547D', shades: ['#EE7293', '#F191AB', '#D64D72', '#C04567'] }, { main: '#9F6AA7', shades: ['#B084B6', '#C19FC7', '#916198', '#82588A'] }, { main: '#5476B3', shades: ['#6382B9', '#829BC7', '#4D6CA3', '#3E5782'] }, { main: '#2BB19B', shades: ['#4DBFAD', '#73CDBF', '#27A18D', '#1F8171'] }, { main: '#70B984', shades: ['#7FBE90', '#98CBA6', '#68A87A', '#5E976E'] }];
+    var svg = selectSVG('svg');
+    var text = document.getElementById('text');
+    var offscreenText = document.getElementById('offscreen-text');
+    var input = document.getElementById('input');
+    var button = document.getElementById('button');
+    var width = window.innerWidth;
+    var height = window.innerHeight;
+    var textSize = 0;
+    var textCenter = 0;
+    var letters = [];
+    var prompt = ['s', 't', 'a', 'r', 't', ' ', 't', 'y', 'p', 'i', 'n', 'g'];
+    var runPrompt = false;
+
+    var resizePage = function resizePage() {
+        width = window.innerWidth;
+        height = window.innerHeight;
+        svg.set('height', height);
+        svg.set('width', width);
+        svg.set('viewBox', '0 0 ' + width + ' ' + height);
+        resizeLetters();
+    };
+
+    var resizeLetters = function resizeLetters() {
+        textSize = width / (letters.length + 2);
+        if (textSize > 100) textSize = 100;
+        //text.style.fontSize = textSize + 'px';
+        //text.style.height = textSize + 'px';
+        //text.style.lineHeight = textSize + 'px';
+        offscreenText.style.fontSize = textSize + 'px';
+        //var textRect = text.getBoundingClientRect();
+        //textCenter = textRect.top + textRect.height / 2;
+        positionLetters();
+    };
+
+    var positionLetters = function positionLetters() {
+        letters.forEach(function (letter) {
+            var timing = letter.shift ? 0.1 : 0;
+            TweenLite.to(letter.onScreen, timing, { x: letter.offScreen.offsetLeft + 'px', ease: Power3.easeInOut });
+            letter.shift = true;
+        });
+    };
+
+    var animateLetterIn = function animateLetterIn(letter) {
+        var yOffset = (0.5 + Math.random() * 0.5) * textSize;
+        TweenLite.fromTo(letter, 0.4, { scale: 0 }, { scale: 1, ease: Back.easeOut });
+        TweenLite.fromTo(letter, 0.4, { opacity: 0 }, { opacity: 1, ease: Power3.easeOut });
+        TweenLite.to(letter, 0.2, { y: -yOffset, ease: Power3.easeInOut });
+        TweenLite.to(letter, 0.2, { y: 0, ease: Power3.easeInOut, delay: 0.2 });
+        var rotation = -50 + Math.random() * 100;
+        TweenLite.to(letter, 0.2, { rotation: rotation, ease: Power3.easeInOut });
+        TweenLite.to(letter, 0.2, { rotation: 0, ease: Power3.easeInOut, delay: 0.2 });
+    };
+
+    var addDecor = function addDecor(letter, color) {
+        setTimeout(function () {
+            var rect = letter.getBoundingClientRect();
+            var x0 = letter.offsetLeft + letter.offsetWidth / 2;
+            var y0 = textCenter - textSize * 0.5;
+            var shade = color.shades[Math.floor(Math.random() * 4)];
+            for (var i = 0; i < 8; i++) {
+                addTri(x0, y0, shade);
+            } for (var i = 0; i < 8; i++) {
+                addCirc(x0, y0);
+            }
+        }, 150);
+    };
+
+    var addTri = function addTri(x0, y0, shade) {
+        var tri = createSVG('polygon');
+        var a = Math.random();
+        var a2 = a + (-0.2 + Math.random() * 0.4);
+        var r = textSize * 0.52;
+        var r2 = r + textSize * Math.random() * 0.2;
+        var x = x0 + r * Math.cos(2 * Math.PI * a);
+        var y = y0 + r * Math.sin(2 * Math.PI * a);
+        var x2 = x0 + r2 * Math.cos(2 * Math.PI * a2);
+        var y2 = y0 + r2 * Math.sin(2 * Math.PI * a2);
+        var triSize = textSize * 0.1;
+        var scale = 0.3 + Math.random() * 0.7;
+        var offset = triSize * scale;
+        tri.set('points', '0,0 ' + triSize * 2 + ',0 ' + triSize + ',' + triSize * 2);
+        tri.style('fill', shade);
+        //svg.element.appendChild(tri.element);
+        TweenLite.fromTo(tri.element, 0.6, { rotation: Math.random() * 360, scale: scale, x: x - offset, y: y - offset, opacity: 1 }, {
+            x: x2 - offset, y: y2 - offset, opacity: 0, ease: Power1.easeInOut, onComplete: function onComplete() {
+                //svg.element.removeChild(tri.element);
+            }
+        });
+    };
+
+    var addCirc = function addCirc(x0, y0) {
+        var circ = createSVG('circle');
+        var a = Math.random();
+        var r = textSize * 0.52;
+        var r2 = r + textSize;
+        var x = x0 + r * Math.cos(2 * Math.PI * a);
+        var y = y0 + r * Math.sin(2 * Math.PI * a);
+        var x2 = x0 + r2 * Math.cos(2 * Math.PI * a);
+        var y2 = y0 + r2 * Math.sin(2 * Math.PI * a);
+        var circSize = textSize * 0.05 * Math.random();
+        circ.set('r', circSize);
+        circ.style('fill', '#eee');
+        //svg.element.appendChild(circ.element);
+        TweenLite.fromTo(circ.element, 0.6, { x: x - circSize, y: y - circSize, opacity: 1 }, {
+            x: x2 - circSize, y: y2 - circSize, opacity: 0, ease: Power1.easeInOut, onComplete: function onComplete() {
+                //svg.element.removeChild(circ.element);
+            }
+        });
+    };
+
+    var addLetter = function addLetter(char, i) {
+        var letter = document.createElement('span');
+        var oLetter = document.createElement('span');
+        letter.innerHTML = char;
+        oLetter.innerHTML = char;
+        //text.appendChild(letter);
+        var color = colors[i % colors.length];
+        letter.style.color = color.main;
+        offscreenText.appendChild(oLetter);
+        letters[i] = { offScreen: oLetter, onScreen: letter, char: char };
+        animateLetterIn(letter);
+        addDecor(oLetter, color);
+    };
+
+    var addLetters = function addLetters(value) {
+        value.forEach(function (char, i) {
+            if (letters[i] && letters[i].char !== char) {
+                letters[i].onScreen.innerHTML = char;
+                letters[i].offScreen.innerHTML = char;
+                letters[i].char = char;
+            }
+            if (letters[i] === undefined) {
+                addLetter(char, i);
+            }
+        });
+    };
+
+    var animateLetterOut = function animateLetterOut(letter, i) {
+        TweenLite.to(letter.onScreen, 0.1, {
+            scale: 0, opacity: 0, ease: Power2.easeIn, onComplete: function onComplete() {
+                console.log('removing');
+                console.log(letter);
+                offscreenText.removeChild(letter.offScreen);
+                text.removeChild(letter.onScreen);
+                positionLetters();
+            }
+        });
+        letters.splice(i, 1);
+    };
+
+    var removeLetters = function removeLetters(value) {
+        for (var i = letters.length - 1; i >= 0; i--) {
+            var letter = letters[i];
+            if (value[i] === undefined) {
+                animateLetterOut(letter, i);
+            }
+        }
+    };
+
+    var onInputChange = function onInputChange() {
+        var value = input.value === '' ? [] : input.value.toLowerCase().split('');
+        addLetters(value);
+        removeLetters(value);
+        resizeLetters();
+    };
+
+    var keyup = function keyup(e) {
+        if (runPrompt) {
+            input.value = '';
+            runPrompt = false;
+        };
+        onInputChange();
+    };
+
+    var addPrompt = function addPrompt(i) {
+        setTimeout(function () {
+            if (runPrompt && prompt[i]) {
+                input.value = input.value + prompt[i];
+                onInputChange();
+                addPrompt(i + 1);
+            }
+        }, 300);
+    };
+
+    resizePage();
+    window.addEventListener('resize', resizePage);
+    input.addEventListener('keyup', keyup);
+    input.focus();
+    addPrompt(0);
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/2.0.1/TweenMax.min.js"></script>
+
+<body>
+
+</body>
+
+</html>
